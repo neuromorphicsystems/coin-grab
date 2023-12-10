@@ -1,0 +1,30 @@
+source = "recordings/2023-12-10T00-26-51Z.es"
+
+[filters.default]
+
+[tasks.colourtime-viridis]
+colormap = "viridis"
+alpha = 0.5
+png_compression_level = 6
+background_color = "#191919"
+scale = 1
+
+[tasks.colourtime-prism]
+colormap = "prism"
+alpha = 0.5
+png_compression_level = 6
+background_color = "#191919"
+scale = 1
+
+[tasks."video-0.001x"]
+frametime = "00:00:00.000020"
+tau = "00:00:00.0005000"
+style = "exponential"
+on_color = "#F4C20D"
+off_color = "#1E88E5"
+idle_color = "#191919"
+cumulative_ratio = 0.01
+timecode = true
+h264_crf = 15
+ffmpeg = "ffmpeg"
+scale = 1

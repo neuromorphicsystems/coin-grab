@@ -1,0 +1,27 @@
+source = "recordings/2023-12-10T00-26-51Z.es"
+
+[filters.default]
+
+[tasks.event-rate-10000-1000]
+long_tau = "00:00:00.010000"
+short_tau = "00:00:00.001000"
+long_tau_color = "#4285F4"
+short_tau_color = "#C4D7F5"
+axis_color = "#000000"
+main_grid_color = "#555555"
+secondary_grid_color = "#DDDDDD"
+width = 1280
+height = 720
+
+[tasks.video-1x]
+frametime = "00:00:00.020000"
+tau = "00:00:00.200000"
+style = "exponential"
+on_color = "#F4C20D"
+off_color = "#1E88E5"
+idle_color = "#191919"
+cumulative_ratio = 0.01
+timecode = true
+h264_crf = 15
+ffmpeg = "ffmpeg"
+scale = 1

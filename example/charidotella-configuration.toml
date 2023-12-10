@@ -1,0 +1,201 @@
+# output directory
+directory = "renders"
+
+
+# filters configuration (filters are applied before tasks)
+
+[filters.default]
+type = "default"
+icon = "🔆"
+suffix = ""
+
+
+# filters generators (advanced filter generation with templates)
+
+[[filters-generators]]
+[filters-generators.parameters]
+threshold = [1, 5, 10, 15, 30, 45, 90, 180, 360, 720]
+[filters-generators.template]
+name = "arbiter-saturation-@threshold"
+type = "arbiter_saturation"
+icon = "🌩 "
+suffix = "as@threshold"
+threshold = "@raw(threshold)"
+
+[[filters-generators]]
+[filters-generators.parameters]
+ratio = [1.0, 2.0, 3.0, 5.0, 10.0]
+[filters-generators.template]
+name = "hot-pixels-@ratio"
+type = "hot_pixels"
+icon = "🌶"
+suffix = "hp@ratio"
+ratio = "@raw(ratio)"
+
+[[filters-generators]]
+[filters-generators.parameters]
+suffix = [1, 10, 100, 1000, 10000, 100000, 1000000]
+refractory = ["00:00:00.000001", "00:00:00.000010", "00:00:00.000100", "00:00:00.001000", "00:00:00.010000", "00:00:00.100000", "00:00:01.000000"]
+[filters-generators.template]
+name = "refractory-@suffix"
+type = "refractory"
+icon = "⏳"
+suffix = "rf@suffix"
+refractory = "@refractory"
+
+[[filters-generators]]
+[filters-generators.parameters]
+suffix = ["flip-left-right", "flip-top-bottom", "rotate-90", "rotate-180", "rotate-270", "transpose", "transverse"]
+method = ["flip_left_right", "flip_top_bottom", "rotate_90", "rotate_180", "rotate_270", "transpose", "transverse"]
+[filters-generators.template]
+name = "@suffix"
+type = "transpose"
+icon = "📐"
+suffix = "@suffix"
+method = "@method"
+
+
+# tasks configuration
+
+[tasks.spatiospectrogram]
+type = "spatiospectrogram"
+icon = "🎸"
+frametime = "00:00:00.020000"
+scale = 1
+tau = "00:00:00.100000"
+mode = "all"
+minimum = 10.0
+maximum = 10000.0
+frequencies = 100
+frequency-gamma = 0.5
+amplitude-gamma = 0.5
+discard = 0.001
+timecode = true
+h264_crf = 15
+ffmpeg = "ffmpeg"
+
+[tasks.spectrogram]
+type = "spectrogram"
+icon = "🎻"
+tau = "00:00:00.100000"
+mode = "all"
+maximum = 10000.0
+frequencies = 100
+times = 1000
+gamma = 0.5
+
+[tasks.video-1x]
+type = "video"
+icon = "🎬"
+frametime = "00:00:00.020000"
+tau = "00:00:00.200000"
+style = "exponential"
+on_color = "#F4C20D"
+off_color = "#1E88E5"
+idle_color = "#191919"
+cumulative_ratio = 0.01
+timecode = true
+h264_crf = 15
+ffmpeg = "ffmpeg"
+scale = 1
+
+[tasks."video-0.001x"]
+type = "video"
+icon = "🎬"
+frametime = "00:00:00.000020"
+tau = "00:00:00.0005000"
+style = "exponential"
+on_color = "#F4C20D"
+off_color = "#1E88E5"
+idle_color = "#191919"
+cumulative_ratio = 0.01
+timecode = true
+h264_crf = 15
+ffmpeg = "ffmpeg"
+scale = 1
+
+[tasks.wiggle]
+type = "wiggle"
+icon = "👋"
+forward_duration = "00:00:01.000000"
+tau_to_frametime_ratio = 3.0
+style = "cumulative"
+idle_color = "#191919"
+on_color = "#F4C20D"
+off_color = "#1E88E5"
+cumulative_ratio = 0.01
+timecode = true
+ffmpeg = "ffmpeg"
+scale = 1
+
+
+# tasks generators (advanced task generation with templates)
+
+[[tasks-generators]]
+[tasks-generators.parameters]
+colormap = ["viridis", "prism"]
+[tasks-generators.template]
+name = "colourtime-@colormap"
+type = "colourtime"
+icon = "🎨"
+colormap = "@colormap"
+alpha = 0.5
+png_compression_level = 6
+background_color = "#191919"
+scale = 1
+
+[[tasks-generators]]
+[tasks-generators.parameters]
+suffix = ["100000-10000", "10000-1000"]
+long_tau = ["00:00:00.100000", "00:00:00.010000"]
+short_tau = ["00:00:00.010000", "00:00:00.001000"]
+[tasks-generators.template]
+name = "event-rate-@suffix"
+type = "event_rate"
+icon = "🎢"
+long_tau = "@long_tau"
+short_tau = "@short_tau"
+long_tau_color = "#4285F4"
+short_tau_color = "#C4D7F5"
+axis_color = "#000000"
+main_grid_color = "#555555"
+secondary_grid_color = "#DDDDDD"
+width = 1280
+height = 720
+
+
+# jobs (source + filters + tasks)
+# the same source file can be used in multiple jobs if begin, end, or filters are different
+#
+
+[[jobs]]
+name = "2023-12-10T00-26-51Z"
+begin = "00:00:00.000000"
+end = "00:00:06.847954"
+filters = ["default"]
+tasks = ["event-rate-10000-1000", "video-1x"]
+
+[[jobs]]
+name = "2023-12-10T00-26-51Z"
+begin = "00:00:02.696000"
+end = "00:00:02.706000"
+filters = ["default"]
+tasks = ["colourtime-.+", "video-0.001x"]
+
+
+# jobs generators (advanced job generation with templates)
+#
+# [[jobs-generators]]
+# [jobs-generators.parameters]
+# threshold = [1, 5, 10, 15, 30, 45, 90, 180, 360, 720]
+# [jobs-generators.template]
+# name = "job-name"
+# begin = "job-begin"
+# end = "job-end"
+# filters = ["arbiter-saturation-@threshold"]
+# tasks = ["colourtime-.+", "event-rate-.+", "spectrogram", "wiggle", "video-1x"]
+
+
+# generated name to source file
+[sources]
+2023-12-10T00-26-51Z = "recordings/2023-12-10T00-26-51Z.es"
